@@ -1,9 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StackNavigation } from "../navigation/StackNavigator";
+import { useNavigation } from "@react-navigation/native";
 
 export default function LoginScreen() {
+  const navigation = useNavigation<StackNavigation>()
 
   function onLogin() {
     console.log('Login button pressed.')
+    navigation.navigate('TransactionHistory')
   }
 
   function onBiometricLogin() {
