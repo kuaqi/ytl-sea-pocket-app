@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { StackNavigation } from "../navigation/StackNavigator";
 import { useNavigation } from "@react-navigation/native";
+import { BiometricUtils } from "../utils/BiometricUtils";
+import ReactNativeBiometrics from "react-native-biometrics";
 
 export default function LoginScreen() {
   const navigation = useNavigation<StackNavigation>()
@@ -10,8 +12,13 @@ export default function LoginScreen() {
     navigation.navigate('TransactionHistory')
   }
 
-  function onBiometricLogin() {
+  async function onBiometricLogin() {
     console.log('Face ID button pressed.')
+    const rnBiometrics = new ReactNativeBiometrics()
+    const result = await BiometricUtils.getLocalBiometry(rnBiometrics)
+    if (result) {
+      navigation.navigate('TransactionHistory')
+    }
   }
 
   function renderLoginButton(buttonTitle: string, loginMethod: Function) {
@@ -34,7 +41,7 @@ export default function LoginScreen() {
     <View style={styles.container}>
       {renderLoginButton('LOGIN', onLogin)}
       {renderPadding()}
-      {renderLoginButton('FACE ID', onBiometricLogin)}
+      {renderLoginButton('FACE ID / TOUCH ID', onBiometricLogin)}
     </View>
   );
 }
