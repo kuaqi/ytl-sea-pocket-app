@@ -54,11 +54,15 @@ export default function TransactionHistoryScreen() {
           </View>
       </Pressable>
     );
-  }, [])
+  }, [isMaskShown])
 
   useEffect(() => {
     setSampleData(mockData)
   }, [])
+
+  function onToggleVisibility() {
+    setMaskShown(!isMaskShown)
+  }
 
   function getTransactionType(type: string) {
     if (!type) return ''
@@ -81,7 +85,13 @@ export default function TransactionHistoryScreen() {
   function renderHeader() {
     return (
       <>
-        <View style={styles.headerContainer} />
+        <View style={styles.headerContainer}>
+          <View style={[styles.iconContainer, styles.iconRightContainer]}>
+            <Text style={styles.headerText} onPress={onToggleVisibility}>
+              {'Show'}
+            </Text>
+          </View>
+        </View>
       </>
     );
   }
@@ -126,8 +136,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   headerContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
     height: 100,
     width: '100%',
+    flexDirection: 'row', 
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: Colour.PRIMARY,
   },
   historyItemContainer: {
@@ -159,6 +174,16 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colour.SECONDARY,
   },
+  iconContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  iconLeftContainer: {
+    justifyContent: 'flex-start',
+  },
+  iconRightContainer: {
+    justifyContent: 'flex-end',
+  },
   contentContainerStyle: {
     gap: 6,
     paddingHorizontal: 18,
@@ -177,6 +202,11 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: 'bold',
     color: 'grey',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
   },
   listFooterComponent: {
     height: 100,
