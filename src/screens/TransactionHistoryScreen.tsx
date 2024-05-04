@@ -3,6 +3,9 @@ import { useCallback, useEffect, useState } from "react";
 import { mask } from "react-native-mask-text";
 import { TransactionHistory } from "../types";
 import { mockData } from "../source/MockData";
+import { AlertUtils } from "../utils/AlertUtils";
+import { BiometricUtils } from "../utils/BiometricUtils";
+import ReactNativeBiometrics from "react-native-biometrics";
 
 const Currency = {
   MYR: 'MYR',
@@ -60,8 +63,22 @@ export default function TransactionHistoryScreen() {
     setSampleData(mockData)
   }, [])
 
-  function onToggleVisibility() {
-    setMaskShown(!isMaskShown)
+  async function onToggleVisibility() {
+    if (!isMaskShown) {      
+      setMaskShown(!isMaskShown)
+    }
+    if (isMaskShown) {
+      const rnBiometrics = new ReactNativeBiometrics()
+      const result = await BiometricUtils.getLocalBiometry(rnBiometrics)
+      if (result) {
+        setMaskShown(!isMaskShown)
+      } else {
+        AlertUtils.showSimpleAlert(
+          'Biometric Authentication',
+          'Face ID or fingerprint is not enabled. Please enable via Settings.'
+        )
+      }
+    }
   }
 
   function getTransactionType(type: string) {
