@@ -1,5 +1,6 @@
 import { FlatList, ListRenderItem, Pressable, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
+import { mask } from "react-native-mask-text";
 import { TransactionHistory } from "../types";
 import { mockData } from "../source/MockData";
 
@@ -21,6 +22,7 @@ const Colour = {
 
 export default function TransactionHistoryScreen() {
   const [sampleData, setSampleData] = useState<TransactionHistory[]>([])
+  const [isMaskShown, setMaskShown] = useState<boolean>(true)
 
   const keyExtractor = useCallback((item: TransactionHistory, index: number) => {
     return `${item.referenceID}-${index}`
@@ -30,35 +32,42 @@ export default function TransactionHistoryScreen() {
     console.log(item.description + ' selected.')
   }, [])
 
-  const renderItem: ListRenderItem<TransactionHistory> = useCallback(({ item }) => (
-    <Pressable
-      onPress={() => onItemPress(item)}
-      style={styles.historyItemContainer}>
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionText} numberOfLines={2}>
-            {item.description}
-          </Text>
-        </View>
-        <View style={styles.amountContainer}>
-          <Text style={styles.amountText}>
-            {getTransactionType(item.type)}{getCurrencyLabel(item.currency)}{' '}{item.amount?.toFixed(2)}
-          </Text>
-        </View>
-    </Pressable>
-  ), [])
+  const renderItem: ListRenderItem<TransactionHistory> = useCallback(({ item }) => {
+    const currencyText = getTransactionType(item.type) + getCurrencyLabel(item.currency)
+    const amountText = item.amount?.toFixed(2)
+    const unmaskedText = currencyText + ' ' + amountText
+    const maskedText = currencyText + ' ' + mask(amountText, '****')
+
+    return (
+      <Pressable
+        onPress={() => onItemPress(item)}
+        style={styles.historyItemContainer}>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionText} numberOfLines={2}>
+              {item.description}
+            </Text>
+          </View>
+          <View style={styles.amountContainer}>
+            <Text style={styles.amountText}>
+              {isMaskShown ? maskedText : unmaskedText}
+            </Text>
+          </View>
+      </Pressable>
+    );
+  }, [])
 
   useEffect(() => {
     setSampleData(mockData)
   }, [])
 
   function getTransactionType(type: string) {
-    if (!type) return
-    if (type === TransactionType.DEBIT) return (<Text>-</Text>);
-    if (type === TransactionType.CREDIT) return (<Text>+</Text>);
+    if (!type) return ''
+    if (type === TransactionType.DEBIT) return '-'
+    if (type === TransactionType.CREDIT) return '+'
   }
 
   function getCurrencyLabel(currency: string) {
-    if (!currency) return
+    if (!currency) return ''
     switch (currency) {
       case Currency.MYR:
         return 'RM'
