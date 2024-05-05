@@ -1,11 +1,10 @@
 import { FlatList, Image, ListRenderItem, Pressable, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigation } from "../navigation/StackNavigator";
 import { TransactionHistory } from "../types";
 import { mockData } from "../source/MockData";
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import Header from "../components/Header";
 
 const Currency = {
   MYR: 'MYR',
@@ -77,35 +76,8 @@ export default function TransactionHistoryScreen() {
     }
   }
 
-  function onBackPress() {
-    navigation.goBack()
-  }
-
   function onToggleVisibility() {
     console.log('onToggleVisibility pressed.')
-  }
-
-  function renderHeader() {
-    return (
-      <>
-        <View style={styles.headerContainer}>
-          <View style={[styles.iconContainer, styles.iconLeftContainer]}>
-            <TouchableOpacity 
-              onPress={onBackPress}
-              style={styles.pressableRadiusContainer}>
-              <AntDesignIcon name="back" size={25} color="white" />
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.iconContainer, styles.iconRightContainer]}>
-           <TouchableOpacity 
-              onPress={onToggleVisibility}
-              style={styles.pressableRadiusContainer}>
-              <AntDesignIcon name="eye" size={25} color="white" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </>
-    );
   }
 
   function renderBankCard() {
@@ -138,7 +110,7 @@ export default function TransactionHistoryScreen() {
 
   return (
     <View style={styles.container}>
-      {renderHeader()}
+      <Header onToggleVisibility={onToggleVisibility} />
       {renderBankCard()}
       {renderTransactionHistoryLabel()}
       <FlatList
@@ -159,30 +131,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     backgroundColor: 'white',
-  },
-  headerContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 12,
-    height: 100,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colour.PRIMARY,
-  },
-  iconContainer: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  iconLeftContainer: {
-    justifyContent: 'flex-start',
-  },
-  iconRightContainer: {
-    justifyContent: 'flex-end',
-  },
-  pressableRadiusContainer: {
-    padding: 16,
-    borderRadius: 24,
   },
   historyItemContainer: {
     paddingHorizontal: 14,

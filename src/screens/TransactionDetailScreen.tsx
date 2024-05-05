@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { TransactionHistory } from "../types";
+import Header from "../components/Header";
 
 const Currency = {
   MYR: 'MYR',
@@ -47,12 +48,8 @@ export default function TransactionDetailScreen({ route }: Props) {
     }
   }
 
-  function renderHeader() {
-    return (
-      <>
-        <View style={styles.headerContainer} />
-      </>
-    );
+  function onToggleVisibility() {
+    console.log('onToggleVisibility pressed.')
   }
 
   function renderTransactionDetailLabel() {
@@ -119,7 +116,7 @@ export default function TransactionDetailScreen({ route }: Props) {
 
   return (
     <View style={styles.container}>
-      {renderHeader()}
+      <Header onToggleVisibility={onToggleVisibility} />
       {renderTransactionDetailLabel()}
       <ScrollView>
         {renderAmount()}
@@ -136,16 +133,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     backgroundColor: 'white',
-  },
-  headerContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    height: 100,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colour.PRIMARY,
   },
   transactionDetailLabelContainer: {
     paddingVertical: 10,
