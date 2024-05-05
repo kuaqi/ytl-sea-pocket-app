@@ -1,20 +1,9 @@
-import { FlatList, Image, ListRenderItem, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, ListRenderItem, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigation } from "../navigation/StackNavigator";
 import { TransactionHistory } from "../types";
 import { mockData } from "../source/MockData";
 import Header from "../components/Header";
-
-const Currency = {
-  MYR: 'MYR',
-  SGD: 'SGD',
-}
-
-const TransactionType = {
-  DEBIT: 'debit',
-  CREDIT: 'credit',
-}
+import TransactionHistoryItem from "../components/TransactionHistoryItem";
 
 const Colour = {
   PRIMARY: '#01A2DA',
@@ -23,58 +12,19 @@ const Colour = {
 }
 
 export default function TransactionHistoryScreen() {
-  const navigation = useNavigation<StackNavigation>()
   const [sampleData, setSampleData] = useState<TransactionHistory[]>([])
 
   const keyExtractor = useCallback((item: TransactionHistory, index: number) => {
     return `${item.referenceID}-${index}`
   }, [])
 
-  const onItemPress = useCallback((item: TransactionHistory) => {
-    console.log(item.description + ' selected.')
-    navigation.navigate('TransactionDetail', {
-      transaction_item: item,
-    })
-  }, [])
-
-  const renderItem: ListRenderItem<TransactionHistory> = useCallback(({ item }) => (
-    <Pressable
-      onPress={() => onItemPress(item)}
-      style={styles.historyItemContainer}>
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionText} numberOfLines={2}>
-            {item.description}
-          </Text>
-        </View>
-        <View style={styles.amountContainer}>
-          <Text style={styles.amountText}>
-            {getTransactionType(item.type)}{getCurrencyLabel(item.currency)}{' '}{item.amount?.toFixed(2)}
-          </Text>
-        </View>
-    </Pressable>
+  const renderItem: ListRenderItem<TransactionHistory> = useCallback(({ item, index }) => (
+    <TransactionHistoryItem item={item} index={index} />
   ), [])
 
   useEffect(() => {
     setSampleData(mockData)
   }, [])
-
-  function getTransactionType(type: string) {
-    if (!type) return
-    if (type === TransactionType.DEBIT) return (<Text>-</Text>);
-    if (type === TransactionType.CREDIT) return (<Text>+</Text>);
-  }
-
-  function getCurrencyLabel(currency: string) {
-    if (!currency) return
-    switch (currency) {
-      case Currency.MYR:
-        return 'RM'
-      case Currency.SGD:
-        return '$'
-      default:
-        return ''
-    }
-  }
 
   function onToggleVisibility() {
     console.log('onToggleVisibility pressed.')
@@ -132,29 +82,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  historyItemContainer: {
-    paddingHorizontal: 14,
-    paddingTop: 10,
-    paddingBottom: 10, 
-    borderRadius: 10,
-    height: 70,
-    width: '100%', 
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'white', 
-  },
-  descriptionContainer: {
-    paddingRight: 30,
-    paddingHorizontal: 8,
-    width: '62%',
-    justifyContent: 'center',
-  },
-  amountContainer: {
-    paddingHorizontal: 4,
-    width: '38%',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
   transactionHistoryLabelContainer: {
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -176,14 +103,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     backgroundColor: Colour.SECONDARY,
-  },
-  descriptionText: {
-    fontSize: 16,
-    color: Colour.PRIMARYTEXT,
-  },
-  amountText: {
-    fontSize: 16,
-    color: Colour.PRIMARYTEXT,
   },
   transactionHistoryText: {
     fontSize: 19,
