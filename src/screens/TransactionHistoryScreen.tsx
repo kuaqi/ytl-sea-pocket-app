@@ -1,5 +1,7 @@
 import { FlatList, ListRenderItem, Pressable, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigation } from "../navigation/StackNavigator";
 import { TransactionHistory } from "../types";
 import { mockData } from "../source/MockData";
 
@@ -20,6 +22,7 @@ const Colour = {
 }
 
 export default function TransactionHistoryScreen() {
+  const navigation = useNavigation<StackNavigation>()
   const [sampleData, setSampleData] = useState<TransactionHistory[]>([])
 
   const keyExtractor = useCallback((item: TransactionHistory, index: number) => {
@@ -28,6 +31,9 @@ export default function TransactionHistoryScreen() {
 
   const onItemPress = useCallback((item: TransactionHistory) => {
     console.log(item.description + ' selected.')
+    navigation.navigate('TransactionDetail', {
+      transaction_item: item,
+    })
   }, [])
 
   const renderItem: ListRenderItem<TransactionHistory> = useCallback(({ item }) => (
