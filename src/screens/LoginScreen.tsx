@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { StackNavigation } from "../navigation/StackNavigator";
 import { useNavigation } from "@react-navigation/native";
 
@@ -12,6 +12,15 @@ export default function LoginScreen() {
 
   function onBiometricLogin() {
     console.log('Face ID button pressed.')
+  }
+
+  function renderCompanyLogo() {
+    return (
+      <Image 
+        style={styles.logoImage}
+        source={require('../assets/icons/ic_ytlsea_logo.png' )}
+      />
+    );
   }
 
   function renderLoginButton(buttonTitle: string, loginMethod: Function) {
@@ -32,6 +41,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      {renderCompanyLogo()}
       {renderLoginButton('LOGIN', onLogin)}
       {renderPadding()}
       {renderLoginButton('FACE ID', onBiometricLogin)}
@@ -45,6 +55,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#01A2DA',
+  },
+  logoImage: {
+    height: '72%',
+    resizeMode: 'contain',
   },
   loginButton: {
     width: 300,
