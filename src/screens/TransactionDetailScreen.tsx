@@ -1,23 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { TransactionHistory } from "../types";
+import { TransactionType, Currency, Colour } from "../constants";
 import Header from "../components/Header";
-
-const Currency = {
-  MYR: 'MYR',
-  SGD: 'SGD',
-}
-
-const TransactionType = {
-  DEBIT: 'debit',
-  CREDIT: 'credit',
-}
-
-const Colour = {
-  PRIMARY: '#01A2DA',
-  SECONDARY: '#C4D4DA',
-  PRIMARYTEXT: '#393939',
-}
 
 interface Props {
   route: {

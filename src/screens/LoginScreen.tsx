@@ -1,6 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { StackNavigation } from "../navigation/StackNavigator";
 import { useNavigation } from "@react-navigation/native";
+import { Colour } from "../constants";
 
 export default function LoginScreen() {
   const navigation = useNavigation<StackNavigation>()
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#01A2DA',
+    backgroundColor: Colour.PRIMARY,
   },
   logoImage: {
     height: '72%',
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#001386',
+    backgroundColor: Colour.ACCENT,
   },
   loginText: {
     color: 'white',

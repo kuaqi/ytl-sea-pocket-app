@@ -4,22 +4,7 @@ import { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigation } from "../navigation/StackNavigator";
 import { TransactionHistory } from "../types";
-
-const Currency = {
-  MYR: 'MYR',
-  SGD: 'SGD',
-}
-
-const TransactionType = {
-  DEBIT: 'debit',
-  CREDIT: 'credit',
-}
-
-const Colour = {
-  PRIMARY: '#01A2DA',
-  SECONDARY: '#C4D4DA',
-  PRIMARYTEXT: '#393939',
-}
+import { Colour, Currency, TransactionType } from "../constants";
 
 interface Props {
   item: TransactionHistory,

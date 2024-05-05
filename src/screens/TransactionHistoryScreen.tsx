@@ -1,15 +1,10 @@
 import { FlatList, Image, ListRenderItem, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { TransactionHistory } from "../types";
+import { Colour } from "../constants";
 import { mockData } from "../source/MockData";
 import Header from "../components/Header";
 import TransactionHistoryItem from "../components/TransactionHistoryItem";
-
-const Colour = {
-  PRIMARY: '#01A2DA',
-  SECONDARY: '#C4D4DA',
-  PRIMARYTEXT: '#393939',
-}
 
 export default function TransactionHistoryScreen() {
   const [sampleData, setSampleData] = useState<TransactionHistory[]>([])
