@@ -1,4 +1,4 @@
-import { FlatList, ListRenderItem, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, ListRenderItem, Pressable, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigation } from "../navigation/StackNavigator";
@@ -83,6 +83,18 @@ export default function TransactionHistoryScreen() {
     );
   }
 
+  function renderBankCard() {
+    return (
+      <>
+        <Image 
+          style={styles.bankCardImage}
+          source={require('../assets/images/transparent_bankcard.png' )}
+        />
+        <View style={styles.bankCardPadding} />
+      </>
+    );
+  }
+
   function renderTransactionHistoryLabel() {
     return (
       <View style={styles.transactionHistoryLabelContainer}>
@@ -102,6 +114,7 @@ export default function TransactionHistoryScreen() {
   return (
     <View style={styles.container}>
       {renderHeader()}
+      {renderBankCard()}
       {renderTransactionHistoryLabel()}
       <FlatList
         data={sampleData}
@@ -155,6 +168,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     width: '100%',
     backgroundColor: Colour.SECONDARY,
+  },
+  bankCardImage: {
+    height: 190,
+    resizeMode: 'contain',
+    backgroundColor: Colour.PRIMARY,
+  },
+  bankCardPadding: {
+    height: 16,
+    width: '100%',
+    backgroundColor: Colour.PRIMARY,
   },
   contentContainerStyle: {
     gap: 6,
