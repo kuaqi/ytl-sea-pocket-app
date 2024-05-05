@@ -1,13 +1,18 @@
 import { FlatList, Image, ListRenderItem, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
+import { mask } from "react-native-mask-text";
 import { TransactionHistory } from "../types";
 import { Colour } from "../constants";
 import { mockData } from "../source/MockData";
+import { AlertUtils } from "../utils/AlertUtils";
+import { BiometricUtils } from "../utils/BiometricUtils";
+import ReactNativeBiometrics from "react-native-biometrics";
 import Header from "../components/Header";
 import TransactionHistoryItem from "../components/TransactionHistoryItem";
 
 export default function TransactionHistoryScreen() {
   const [sampleData, setSampleData] = useState<TransactionHistory[]>([])
+  const [isMaskShown, setMaskShown] = useState<boolean>(true)
 
   const keyExtractor = useCallback((item: TransactionHistory, index: number) => {
     return `${item.referenceID}-${index}`
@@ -21,8 +26,22 @@ export default function TransactionHistoryScreen() {
     setSampleData(mockData)
   }, [])
 
-  function onToggleVisibility() {
-    console.log('onToggleVisibility pressed.')
+  async function onToggleVisibility() {
+    if (!isMaskShown) {      
+      setMaskShown(!isMaskShown)
+    }
+    if (isMaskShown) {
+      const rnBiometrics = new ReactNativeBiometrics()
+      const result = await BiometricUtils.getLocalBiometry(rnBiometrics)
+      if (result) {
+        setMaskShown(!isMaskShown)
+      } else {
+        AlertUtils.showSimpleAlert(
+          'Biometric Authentication',
+          'Face ID or fingerprint is not enabled. Please enable via Settings.'
+        )
+      }
+    }
   }
 
   function renderBankCard() {
@@ -103,6 +122,11 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: 'bold',
     color: 'grey',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
   },
   listFooterComponent: {
     height: 100,

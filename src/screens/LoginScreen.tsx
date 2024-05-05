@@ -2,6 +2,9 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { StackNavigation } from "../navigation/StackNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { Colour } from "../constants";
+import { AlertUtils } from "../utils/AlertUtils";
+import { BiometricUtils } from "../utils/BiometricUtils";
+import ReactNativeBiometrics from "react-native-biometrics";
 
 export default function LoginScreen() {
   const navigation = useNavigation<StackNavigation>()
@@ -11,8 +14,18 @@ export default function LoginScreen() {
     navigation.navigate('TransactionHistory')
   }
 
-  function onBiometricLogin() {
+  async function onBiometricLogin() {
     console.log('Face ID button pressed.')
+    const rnBiometrics = new ReactNativeBiometrics()
+    const result = await BiometricUtils.getLocalBiometry(rnBiometrics)
+    if (result) {
+      navigation.navigate('TransactionHistory')
+    } else {
+      AlertUtils.showSimpleAlert(
+        'Biometric Authentication',
+        'Face ID or fingerprint is not enabled. Please enable via Settings.'
+      )
+    }
   }
 
   function renderCompanyLogo() {
@@ -45,7 +58,7 @@ export default function LoginScreen() {
       {renderCompanyLogo()}
       {renderLoginButton('LOGIN', onLogin)}
       {renderPadding()}
-      {renderLoginButton('FACE ID', onBiometricLogin)}
+      {renderLoginButton('FACE ID / TOUCH ID', onBiometricLogin)}
     </View>
   );
 }
