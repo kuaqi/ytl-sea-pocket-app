@@ -1,6 +1,5 @@
 import { FlatList, Image, ListRenderItem, StyleSheet, Text, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
-import { mask } from "react-native-mask-text";
 import { TransactionHistory } from "../types";
 import { Colour } from "../constants";
 import { mockData } from "../source/MockData";
@@ -19,8 +18,8 @@ export default function TransactionHistoryScreen() {
   }, [])
 
   const renderItem: ListRenderItem<TransactionHistory> = useCallback(({ item, index }) => (
-    <TransactionHistoryItem item={item} index={index} />
-  ), [])
+    <TransactionHistoryItem item={item} index={index} isMaskShown={isMaskShown} />
+  ), [isMaskShown])
 
   useEffect(() => {
     setSampleData(mockData)

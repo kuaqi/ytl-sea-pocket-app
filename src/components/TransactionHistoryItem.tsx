@@ -3,16 +3,22 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigation } from "../navigation/StackNavigator";
+import { mask } from "react-native-mask-text";
 import { TransactionHistory } from "../types";
 import { Colour, Currency, TransactionType } from "../constants";
 
 interface Props {
   item: TransactionHistory,
   index: number,
+  isMaskShown: boolean,
 }
 
-const TransactionHistoryItem = ({ item, index }: Props) => {
+const TransactionHistoryItem = ({ item, index, isMaskShown }: Props) => {
   const navigation = useNavigation<StackNavigation>();
+  const currencyText = getTransactionType(item.type) + getCurrencyLabel(item.currency)
+  const amountText = item.amount?.toFixed(2)
+  const unmaskedText = currencyText + ' ' + amountText
+  const maskedText = currencyText + ' ' + mask(amountText, '****')
 
   const onItemPress = useCallback((item: TransactionHistory) => {
     console.log(item.description + ' selected.');
@@ -22,20 +28,20 @@ const TransactionHistoryItem = ({ item, index }: Props) => {
   }, []);
 
   function getTransactionType(type: string) {
-    if (!type) return;
-    if (type === TransactionType.DEBIT) return (<Text>-</Text>);
-    if (type === TransactionType.CREDIT) return (<Text>+</Text>);
+    if (!type) return ''
+    if (type === TransactionType.DEBIT) return '-'
+    if (type === TransactionType.CREDIT) return '+'
   }
 
   function getCurrencyLabel(currency: string) {
-    if (!currency) return;
+    if (!currency) return ''
     switch (currency) {
       case Currency.MYR:
-        return 'RM';
+        return 'RM'
       case Currency.SGD:
-        return '$';
+        return '$'
       default:
-        return '';
+        return ''
     }
   }
 
@@ -50,7 +56,7 @@ const TransactionHistoryItem = ({ item, index }: Props) => {
       </View>
       <View style={styles.amountContainer}>
         <Text style={styles.amountText}>
-          {getTransactionType(item.type)}{getCurrencyLabel(item.currency)}{' '}{item.amount?.toFixed(2)}
+          {isMaskShown ? maskedText : unmaskedText}
         </Text>
       </View>
     </Pressable>

@@ -1,7 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useState } from "react";
+import { mask } from "react-native-mask-text";
 import { TransactionHistory } from "../types";
 import { TransactionType, Currency, Colour } from "../constants";
+import { AlertUtils } from "../utils/AlertUtils";
+import { BiometricUtils } from "../utils/BiometricUtils";
+import ReactNativeBiometrics from "react-native-biometrics";
 import Header from "../components/Header";
 
 interface Props {
@@ -13,6 +18,7 @@ interface Props {
 }
 
 export default function TransactionDetailScreen({ route }: Props) {
+  const [isMaskShown, setMaskShown] = useState<boolean>(true)
   const { transaction_item: detailItem } = route.params
 
   function getTransactionType(type: string) {
@@ -33,8 +39,22 @@ export default function TransactionDetailScreen({ route }: Props) {
     }
   }
 
-  function onToggleVisibility() {
-    console.log('onToggleVisibility pressed.')
+  async function onToggleVisibility() {
+    if (!isMaskShown) {
+      setMaskShown(!isMaskShown)
+    }
+    if (isMaskShown) {
+      const rnBiometrics = new ReactNativeBiometrics()
+      const result = await BiometricUtils.getLocalBiometry(rnBiometrics)
+      if (result) {
+        setMaskShown(!isMaskShown)
+      } else {
+        AlertUtils.showSimpleAlert(
+          'Biometric Authentication',
+          'Face ID or fingerprint is not enabled. Please enable via Settings.'
+        )
+      }
+    }
   }
 
   function renderTransactionDetailLabel() {
@@ -50,6 +70,8 @@ export default function TransactionDetailScreen({ route }: Props) {
   function renderAmount() {
     const currencyText = getTransactionType(detailItem.type) + getCurrencyLabel(detailItem.currency)
     const amountText = detailItem.amount?.toFixed(2)
+    const unmaskedText = currencyText + ' ' + amountText
+    const maskedText = currencyText + ' ' + mask(amountText, '****')
 
     return (
       <View style={styles.rowContainer}>
@@ -58,7 +80,7 @@ export default function TransactionDetailScreen({ route }: Props) {
             styles.amountText,
             detailItem.type === TransactionType.CREDIT ? { color: 'green' } : { color: 'red' }
           ]}>
-            {currencyText + amountText}
+            {isMaskShown ? maskedText : unmaskedText}
           </Text>
         </View>
       </View>
